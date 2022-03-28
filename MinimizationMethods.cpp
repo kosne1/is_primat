@@ -142,31 +142,35 @@ double ParabolicMethod(double x)
 
 double BrentMethod(double lowerLimit, double upperLimit)
 {
+    upperLimit *= 2;
+    int counter = 0;
+    int functionCounter = 0;
     double K = (3 - sqrt(5)) / 2;
-    double x = lowerLimit + K * (upperLimit - lowerLimit);
+    double x = (lowerLimit + upperLimit) / 2;
     double w = x, v = x;
     double fx = function(x), fw = function(x), fv = function(x);
     double d = upperLimit - lowerLimit, e = upperLimit - lowerLimit;
-    while(round((upperLimit - lowerLimit)*100) / 100 - 3*eps > 0)
+    while(round(abs(upperLimit - lowerLimit)*100) / 100 - 3*eps > 0)
     {
+        ++counter;
         double g = e;
         e = d;
         double numerator = pow((w - x), 2) * (fw - fv) - pow((w - x), 2) * (fw - fx);
         double denominator = 2 * ((w - x) * (fw - fv) - (w - v) * (fw - fx));
         double u = w - numerator / (denominator + pow(10,  -7));
-        if (lowerLimit + eps <= u <= upperLimit - eps && abs(u - x) < g / 2)
+        if ((lowerLimit + eps <= u <= upperLimit - eps) && abs(u - x) < g / 2)
             d = abs(u - x);
         else
         {
             if (x < (upperLimit - lowerLimit) / 2)
             {
-                u = x + K * (lowerLimit - x);
-                d = lowerLimit - x;
+                u = x + K * (upperLimit - x);
+                d = upperLimit - x;
             }
             else
             {
-                u = x - K * (x - upperLimit);
-                d = x - upperLimit;
+                u = x - K * (x - lowerLimit);
+                d = x - lowerLimit;
             }
         }
 
@@ -181,6 +185,36 @@ double BrentMethod(double lowerLimit, double upperLimit)
         }
 
         double fu = function(u);
-
+        ++functionCounter;
+        if (fu < fx)
+        {
+            if (u >= x)
+                lowerLimit = x;
+            else
+                upperLimit = x;
+            v = w; w = x; x = u;
+            fv = fw; fw = fx; fx = fu;
+        }
+        else
+        {
+            if (u >= x)
+                upperLimit = u;
+            else
+                lowerLimit = u;
+            if (fu < fw || w == x)
+            {
+                v = w; w = u;
+                fv = fw; fw = fu;
+            }
+            else if (fu <= fv || v == x || v == w)
+            {
+                v = u;
+                fv = fu;
+            }
+        }
     }
+
+    std::cout << "Total operations performed: " << counter << '\n';
+    std::cout << "The function was calculated: " << functionCounter << " times\n";
+    return x;
 }
