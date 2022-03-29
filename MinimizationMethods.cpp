@@ -34,24 +34,36 @@ double DichotomyMethod(double lowerLimit, double upperLimit)
 double GoldenRatioMethod(double lowerLimit, double upperLimit)
 {
     int counter = 0;
-    double goldenNumber = (sqrt(5) + 1) / 2;
+    int functionCounter = 0;
+    double goldenNumber = (3 - sqrt(5)) / 2;
+
+    double x1 = lowerLimit + (upperLimit - lowerLimit) * goldenNumber;
+    double x2 = upperLimit - (upperLimit - lowerLimit) * goldenNumber;
+    double y1 = function(x1);
+    double y2 = function(x2);
+    functionCounter += 2;
+
     while (round((upperLimit - lowerLimit)*100) / 100 - eps > 0)
     {
-        double x1 = upperLimit - (upperLimit - lowerLimit) / goldenNumber;
-        double y1 = function(x1);
-        double x2 = lowerLimit + (upperLimit - lowerLimit) / goldenNumber;
-        double y2 = function(x2);
-
-        if (y1 > y2)
-            lowerLimit = x1;
+        if (y1 < y2)
+        {
+            upperLimit = x1;
+            x1 = lowerLimit + (upperLimit - lowerLimit) * goldenNumber;
+            y1 = function(x1);
+        }
         else
-            upperLimit = x2;
+        {
+            lowerLimit = x2;
+            x2 = upperLimit - (upperLimit - lowerLimit) * goldenNumber;
+            y2 = function(x2);
+        }
+        ++functionCounter;
 
         ++counter;
     }
 
     std::cout << "Total operations performed: " << counter << '\n';
-    std::cout << "The function was calculated: " << counter * 2 << " times\n";
+    std::cout << "The function was calculated: " << functionCounter << " times\n";
     return (lowerLimit + upperLimit) / 2;
 }
 
