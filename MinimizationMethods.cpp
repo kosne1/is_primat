@@ -6,6 +6,7 @@ const double eps = pow(10, -3);
 double function(double x)
 {
     return sin(x) - log(pow(x, 2)) - 1;
+//    return pow(x, 4) + pow(x, 3);
 }
 
 double DichotomyMethod(double lowerLimit, double upperLimit)
@@ -124,31 +125,25 @@ double FibonacciMethod(double lowerLimit, double upperLimit, size_t n)
 
 double ParabolicMethod(double x)
 {
-//    double mean_x = 0;
-//    while (true)
-//    {
-//        double y1 = function(x1);
-//        double y2 = function(x2);
-//        double y3 = function(x3);
-//        double a0 = y1;
-//        double a1 = (y2 - y1) / x2 - x1;
-//        double a2 = 1 / (x3 - x2) * ((y3 - y1) / (x3 - x1) * ((y2 - y1) / (x2 - x1)));
-//        double mean_x_current = 0.5 * (x1 + x2 - a1 / a2);
-//        if (x1 < x2 < x3)
-//            break;
-//        if (mean_x_current - mean_x > eps)
-//            break;
-//        mean_x = mean_x_current;
-//    }
+    int counter = 0;
+    int functionCounter = 0;
     while ((function(x + eps) - 2 * function(x) + function(x - eps)) / (eps * eps) <= 0)
-        x+=0.1;
+    {
+        x += 0.1;
+        functionCounter += 3;
+    }
     double x1;
     x1 = x - 0.5 * eps * (function(x + eps) - function(x - eps)) / (function(x + eps) - 2 * function(x) + function(x - eps));
+    functionCounter += 3;
     while (fabs(x1 - x) > eps) {
         x = x1;
         x1 = x - 0.5 * eps * (function(x + eps) - function(x - eps)) / (function(x + eps) - 2 * function(x) + function(x - eps));
+        functionCounter += 3;
+        ++counter;
     }
 
+    std::cout << "Total operations performed: " << counter << '\n';
+    std::cout << "The function was calculated: " << functionCounter << " times\n";
     return x1;
 }
 
@@ -157,7 +152,7 @@ double BrentMethod(double lowerLimit, double upperLimit)
     upperLimit *= 2;
     int counter = 0;
     int functionCounter = 0;
-    double K = (3 - sqrt(5)) / 2;
+    double GoldenNumber = (3 - sqrt(5)) / 2;
     double x = (lowerLimit + upperLimit) / 2;
     double w = x, v = x;
     double fx = function(x), fw = function(x), fv = function(x);
@@ -176,12 +171,12 @@ double BrentMethod(double lowerLimit, double upperLimit)
         {
             if (x < (upperLimit - lowerLimit) / 2)
             {
-                u = x + K * (upperLimit - x);
+                u = x + GoldenNumber * (upperLimit - x);
                 d = upperLimit - x;
             }
             else
             {
-                u = x - K * (x - lowerLimit);
+                u = x - GoldenNumber * (x - lowerLimit);
                 d = x - lowerLimit;
             }
         }
