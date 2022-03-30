@@ -123,28 +123,70 @@ double FibonacciMethod(double lowerLimit, double upperLimit, size_t n)
     return (lowerLimit + upperLimit) / 2;
 }
 
-double ParabolicMethod(double x)
+double ParabolicMethod(double lowerLimit, double upperLimit)
 {
     int counter = 0;
     int functionCounter = 0;
-    while ((function(x + eps) - 2 * function(x) + function(x - eps)) / (eps * eps) <= 0)
-    {
-        x += 0.1;
-        functionCounter += 3;
-    }
-    double x1;
-    x1 = x - 0.5 * eps * (function(x + eps) - function(x - eps)) / (function(x + eps) - 2 * function(x) + function(x - eps));
+    double x1 = lowerLimit, x2 = (lowerLimit + upperLimit) / 2, x3 = upperLimit;
+    double f1 = function(x1);
+    double f2 = function(x2);
+    double f3 = function(x3);
     functionCounter += 3;
-    while (fabs(x1 - x) > eps) {
-        x = x1;
-        x1 = x - 0.5 * eps * (function(x + eps) - function(x - eps)) / (function(x + eps) - 2 * function(x) + function(x - eps));
-        functionCounter += 3;
+
+    double mean_x = INT_MAX;
+    double current_mean_x;
+    while(true)
+    {
         ++counter;
+
+        double numerator = pow(x2 - x1, 2) * (f2 - f3) - pow(x2 - x3, 2) * (f2 - f1);
+
+        double denominator = (x2 - x1) * (f2 - f3) - (x2 - x3) * (f2 - f1);
+        denominator *= 2;
+        current_mean_x = x2 - numerator / denominator;
+
+        if (std::abs(mean_x - current_mean_x) < eps)
+            break;
+
+        if (current_mean_x < x2)
+        {
+            if (function(current_mean_x) < f2)
+            {
+                x3 = x2;
+                f3 = f2;
+                x2 = current_mean_x;
+                f2 = function(current_mean_x);
+            }
+            else
+            {
+                x1 = current_mean_x;
+                f1 = function(current_mean_x);
+            }
+        }
+        else
+        {
+            if (function(current_mean_x) < f2)
+            {
+                x1 = x2;
+                f1 = f2;
+                x2 = current_mean_x;
+                f2 = function(current_mean_x);
+            }
+            else
+            {
+                x3 = current_mean_x;
+                f3 = function(current_mean_x);
+            }
+        }
+
+        mean_x = current_mean_x;
+
+        ++functionCounter;
     }
 
     std::cout << "Total operations performed: " << counter << '\n';
     std::cout << "The function was calculated: " << functionCounter << " times\n";
-    return x1;
+    return mean_x;
 }
 
 double BrentMethod(double lowerLimit, double upperLimit)
