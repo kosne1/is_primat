@@ -5,8 +5,8 @@ const double eps = pow(10, -3);
 
 double function(double x)
 {
-    return sin(x) - log(pow(x, 2)) - 1;
-//    return pow(x, 4) + pow(x, 3);
+//    return sin(x) - log(pow(x, 2)) - 1;
+    return pow(x, 4) + pow(x, 3);
 }
 
 double DichotomyMethod(double lowerLimit, double upperLimit)
@@ -44,7 +44,7 @@ double GoldenRatioMethod(double lowerLimit, double upperLimit)
     double y2 = function(x2);
     functionCounter += 2;
 
-    while (round((upperLimit - lowerLimit)*100) / 100 - eps > 0)
+    while (abs(round((upperLimit - lowerLimit)*100) / 100) - eps > 0)
     {
         if (y1 < y2)
         {
@@ -199,7 +199,7 @@ double BrentMethod(double lowerLimit, double upperLimit)
     double w = x, v = x;
     double fx = function(x), fw = function(x), fv = function(x);
     double d = upperLimit - lowerLimit, e = upperLimit - lowerLimit;
-    while(round(abs(upperLimit - lowerLimit)*100) / 100 - 3*eps > 0)
+    while(round(abs(upperLimit - lowerLimit)*100) / 100 - eps > 0)
     {
         ++counter;
         double g = e;
@@ -207,8 +207,8 @@ double BrentMethod(double lowerLimit, double upperLimit)
         double numerator = pow((w - x), 2) * (fw - fv) - pow((w - x), 2) * (fw - fx);
         double denominator = 2 * ((w - x) * (fw - fv) - (w - v) * (fw - fx));
         double u = w - numerator / (denominator + pow(10,  -7));
-        if ((lowerLimit + eps <= u <= upperLimit - eps) && abs(u - x) < g / 2)
-            d = abs(u - x);
+        if ((lowerLimit + eps <= u <= upperLimit - eps) && std::abs(u - x) < g / 2)
+            d = std::abs(u - x);
         else
         {
             if (x < (upperLimit - lowerLimit) / 2)
@@ -223,11 +223,11 @@ double BrentMethod(double lowerLimit, double upperLimit)
             }
         }
 
-        if (abs(u - x) < eps)
+        if (std::abs(u - x) < eps)
         {
             if (u < x)
                 u = x - eps;
-            else if (abs(u - x) > eps)
+            else if (std::abs(u - x) > eps)
                 u = x + eps;
             else
                 u = x;
