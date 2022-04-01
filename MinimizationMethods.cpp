@@ -5,8 +5,8 @@ const double eps = pow(10, -3);
 
 double function(double x)
 {
-//    return sin(x) - log(pow(x, 2)) - 1;
-    return pow(x, 4) + pow(x, 3);
+    return sin(x) - log(pow(x, 2)) - 1;
+//    return pow(x, 4) + pow(x, 3);
 }
 
 double DichotomyMethod(double lowerLimit, double upperLimit)
@@ -14,9 +14,9 @@ double DichotomyMethod(double lowerLimit, double upperLimit)
     int counter = 0;
     while (round((upperLimit - lowerLimit)*100) / 100 - eps > 0)
     {
-        double x1 = (upperLimit + lowerLimit) / 2 - eps;
+        double x1 = (upperLimit + lowerLimit - eps) / 2;
         double y1 = function(x1);
-        double x2 = (upperLimit + lowerLimit) / 2 + eps;
+        double x2 = (upperLimit + lowerLimit - eps) / 2;
         double y2 = function(x2);
 
         if (y1 <= y2)
@@ -147,35 +147,35 @@ double ParabolicMethod(double lowerLimit, double upperLimit)
 
         if (std::abs(mean_x - current_mean_x) < eps)
             break;
-
+        double y = function(current_mean_x);
         if (current_mean_x < x2)
         {
-            if (function(current_mean_x) < f2)
+            if (y < f2)
             {
                 x3 = x2;
                 f3 = f2;
                 x2 = current_mean_x;
-                f2 = function(current_mean_x);
+                f2 = y;
             }
             else
             {
                 x1 = current_mean_x;
-                f1 = function(current_mean_x);
+                f1 = y;
             }
         }
         else
         {
-            if (function(current_mean_x) < f2)
+            if (y < f2)
             {
                 x1 = x2;
                 f1 = f2;
                 x2 = current_mean_x;
-                f2 = function(current_mean_x);
+                f2 = y;
             }
             else
             {
                 x3 = current_mean_x;
-                f3 = function(current_mean_x);
+                f3 = y;
             }
         }
 
